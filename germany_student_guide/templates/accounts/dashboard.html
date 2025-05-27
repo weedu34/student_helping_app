@@ -1,0 +1,131 @@
+<!-- templates/accounts/dashboard.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Dashboard - Germany Student Guide{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="bg-white rounded-3 shadow-sm p-4 mb-4">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h1 class="mb-2">Welcome, {{ user.get_full_name }}! <span class="german-flag"></span></h1>
+                        <p class="text-muted mb-0">
+                            <i class="fas fa-university me-2"></i>{{ user.get_university_display }} • 
+                            <i class="fas fa-map-marker-alt me-1"></i>{{ user.intended_city }}
+                        </p>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <div class="d-inline-block">
+                            <div class="progress" style="width: 120px; height: 8px;">
+                                <div class="progress-bar bg-success" style="width: {{ completion_percentage }}%"></div>
+                            </div>
+                            <small class="text-muted">Profile {{ completion_percentage }}% complete</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-8">
+            <div class="bg-white rounded-3 shadow-sm p-4 mb-4">
+                <h3 class="mb-4"><i class="fas fa-tasks me-2"></i>Your Next Steps</h3>
+                {% for step in next_steps %}
+                    <div class="step-card {% if step.priority == 'high' %}step-high{% else %}step-normal{% endif %} mb-3">
+                        <div class="d-flex align-items-start">
+                            <div class="flex-shrink-0 me-3">
+                                <div class="step-icon {% if step.priority == 'high' %}step-icon-high{% else %}step-icon-normal{% endif %}">
+                                    <i class="fas fa-{% if step.priority == 'high' %}exclamation-triangle{% else %}info-circle{% endif %}"></i>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1">
+                                <h5 class="mb-2 step-title">{{ step.title }}</h5>
+                                <p class="mb-0 step-description">{{ step.description }}</p>
+                                <div class="mt-2">
+                                    <span class="badge {% if step.priority == 'high' %}bg-warning text-dark{% else %}bg-info{% endif %}">
+                                        {% if step.priority == 'high' %}High Priority{% else %}Normal Priority{% endif %}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="flex-shrink-0">
+                                <button class="btn btn-sm btn-outline-success mark-complete-btn" 
+                                        onclick="markStepComplete(this)"
+                                        title="Mark as complete">
+                                    <i class="fas fa-check"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                {% empty %}
+                    <div class="text-center py-5">
+                        <div class="mb-4">
+                            <i class="fas fa-check-circle fa-4x text-success"></i>
+                        </div>
+                        <h4 class="text-success mb-3">All caught up!</h4>
+                        <p class="text-muted mb-0">You're doing great! Check back later for new updates and tips.</p>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="bg-white rounded-3 shadow-sm p-4 mb-4">
+                <h4 class="mb-3"><i class="fas fa-user-circle me-2"></i>Profile Summary</h4>
+                <ul class="list-unstyled">
+                    <li class="mb-2">
+                        <strong>Status:</strong> 
+                        <span class="badge bg-{% if user.arrival_status == 'ARRIVED' %}success{% elif user.arrival_status == 'PLANNING' %}warning{% else %}info{% endif %}">
+                            {{ user.get_arrival_status_display }}
+                        </span>
+                    </li>
+                    <li class="mb-2"><strong>University:</strong> {{ user.get_university_display }}</li>
+                    <li class="mb-2"><strong>Course:</strong> {{ user.course_of_study }}</li>
+                    <li class="mb-2"><strong>Destination:</strong> {{ user.intended_city }}</li>
+                    {% if user.arrival_date %}
+                        <li class="mb-2"><strong>Arrival:</strong> {{ user.arrival_date|date:"M d, Y" }}</li>
+                    {% endif %}
+                </ul>
+                <a href="{% url 'profile_update' %}" class="btn btn-outline-primary btn-sm w-100">
+                    <i class="fas fa-edit me-2"></i>Update Profile
+                </a>
+            </div>
+            
+            <div class="bg-white rounded-3 shadow-sm p-4">
+                <h4 class="mb-3"><i class="fas fa-info-circle me-2"></i>Quick Links</h4>
+                <div class="d-grid gap-2">
+                    <a href="#" class="btn btn-outline-secondary btn-sm">
+                        <i class="fas fa-route me-2"></i>Transportation Guide
+                    </a>
+                    <a href="#" class="btn btn-outline-secondary btn-sm">
+                        <i class="fas fa-file-alt me-2"></i>Registration Guide
+                    </a>
+                    <a href="#" class="btn btn-outline-secondary btn-sm">
+                        <i class="fas fa-shopping-cart me-2"></i>Find Grocery Stores
+                    </a>
+                    <a href="#" class="btn btn-outline-secondary btn-sm">
+                        <i class="fas fa-home me-2"></i>Housing Resources
+                    </a>
+                    <a href="{% url 'user_list' %}" class="btn btn-outline-secondary btn-sm">
+                        <i class="fas fa-users me-2"></i>Student Directory
+                    </a>
+                    <a href="{% url 'logout' %}" class="btn btn-outline-danger btn-sm">
+                        <i class="fas fa-sign-out-alt me-2"></i>Sign Out
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/dashboard.js' %}"></script>
+{% endblock %}

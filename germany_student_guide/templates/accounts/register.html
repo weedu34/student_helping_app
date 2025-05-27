@@ -1,0 +1,190 @@
+<!-- templates/accounts/register.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Register - Germany Student Guide{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/auth.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-card" style="max-width: 1200px;">
+        <div class="register-header auth-header">
+            <h2><span class="german-flag"></span>Join Our Community</h2>
+            <p class="mb-0">Get personalized guidance for your studies in Germany</p>
+        </div>
+        <div class="auth-body">
+            <form method="post">
+                {% csrf_token %}
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4 class="form-section-header">
+                            <i class="fas fa-user me-2"></i>Personal Information
+                        </h4>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label class="form-label">First Name *</label>
+                                {{ form.first_name }}
+                                {% if form.first_name.errors %}
+                                    <div class="text-danger small">{{ form.first_name.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Last Name *</label>
+                                {{ form.last_name }}
+                                {% if form.last_name.errors %}
+                                    <div class="text-danger small">{{ form.last_name.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <label class="form-label">Username *</label>
+                        {{ form.username }}
+                        {% if form.username.errors %}
+                            <div class="text-danger small">{{ form.username.errors.0 }}</div>
+                        {% endif %}
+                        
+                        <label class="form-label">Email *</label>
+                        {{ form.email }}
+                        {% if form.email.errors %}
+                            <div class="text-danger small">{{ form.email.errors.0 }}</div>
+                        {% endif %}
+                        
+                        <label class="form-label">Phone Number</label>
+                        {{ form.phone_number }}
+                        {% if form.phone_number.errors %}
+                            <div class="text-danger small">{{ form.phone_number.errors.0 }}</div>
+                        {% endif %}
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label class="form-label">Date of Birth</label>
+                                {{ form.date_of_birth }}
+                                {% if form.date_of_birth.errors %}
+                                    <div class="text-danger small">{{ form.date_of_birth.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Nationality *</label>
+                                {{ form.nationality }}
+                                {% if form.nationality.errors %}
+                                    <div class="text-danger small">{{ form.nationality.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <h4 class="form-section-header">
+                            <i class="fas fa-graduation-cap me-2"></i>Academic Information
+                        </h4>
+                        
+                        <label class="form-label">University *</label>
+                        {{ form.university }}
+                        {% if form.university.errors %}
+                            <div class="text-danger small">{{ form.university.errors.0 }}</div>
+                        {% endif %}
+                        
+                        <label class="form-label">Student ID</label>
+                        {{ form.student_id }}
+                        {% if form.student_id.errors %}
+                            <div class="text-danger small">{{ form.student_id.errors.0 }}</div>
+                        {% endif %}
+                        
+                        <label class="form-label">Course of Study *</label>
+                        {{ form.course_of_study }}
+                        {% if form.course_of_study.errors %}
+                            <div class="text-danger small">{{ form.course_of_study.errors.0 }}</div>
+                        {% endif %}
+                        
+                        <h4 class="form-section-header mt-4">
+                            <i class="fas fa-map-marker-alt me-2"></i>Arrival Information
+                        </h4>
+                        
+                        <label class="form-label">Intended City *</label>
+                        {{ form.intended_city }}
+                        {% if form.intended_city.errors %}
+                            <div class="text-danger small">{{ form.intended_city.errors.0 }}</div>
+                        {% endif %}
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label class="form-label">Arrival Date</label>
+                                {{ form.arrival_date }}
+                                {% if form.arrival_date.errors %}
+                                    <div class="text-danger small">{{ form.arrival_date.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Arrival Status *</label>
+                                {{ form.arrival_status }}
+                                {% if form.arrival_status.errors %}
+                                    <div class="text-danger small">{{ form.arrival_status.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <hr class="my-4">
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4 class="form-section-header">
+                            <i class="fas fa-shield-alt me-2"></i>Security
+                        </h4>
+                        
+                        <label class="form-label">Password *</label>
+                        {{ form.password1 }}
+                        {% if form.password1.errors %}
+                            <div class="text-danger small">{{ form.password1.errors.0 }}</div>
+                        {% endif %}
+                        
+                        <label class="form-label">Confirm Password *</label>
+                        {{ form.password2 }}
+                        {% if form.password2.errors %}
+                            <div class="text-danger small">{{ form.password2.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="col-md-6 d-flex align-items-center">
+                        <div class="welcome-section w-100">
+                            <i class="fas fa-rocket welcome-icon"></i>
+                            <h5>Ready to Start?</h5>
+                            <p class="text-muted">Join thousands of students who successfully navigated their German journey with our help.</p>
+                            
+                            <div class="feature-highlight mb-2">
+                                <h6><i class="fas fa-check-circle me-2"></i>Personalized Guidance</h6>
+                            </div>
+                            <div class="feature-highlight">
+                                <h6><i class="fas fa-globe me-2"></i>Multi-language Support</h6>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="text-center mt-4">
+                    <button type="submit" class="btn btn-primary auth-btn btn-lg px-5">
+                        <i class="fas fa-user-plus me-2"></i>Create My Account
+                    </button>
+                </div>
+                
+                <div class="text-center mt-3">
+                    <small class="text-muted">
+                        Already have an account? 
+                        <a href="{% url 'login' %}" class="text-decoration-none">Sign in here</a>
+                    </small>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/auth.js' %}"></script>
+{% endblock %}

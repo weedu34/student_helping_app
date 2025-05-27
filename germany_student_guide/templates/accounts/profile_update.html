@@ -1,0 +1,86 @@
+<!-- templates/accounts/profile_update.html -->
+{% extends 'base.html' %}
+
+{% block title %}Update Profile - Germany Student Guide{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="bg-white rounded-3 shadow-sm">
+                <div class="auth-header">
+                    <h2><i class="fas fa-user-edit me-2"></i>Update Your Profile</h2>
+                    <p class="mb-0">Keep your information current for better personalized guidance</p>
+                </div>
+                <div class="auth-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h5 class="mb-3">Contact Information</h5>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Phone Number</label>
+                                    <input type="text" name="phone_number" class="form-control" 
+                                           value="{{ user.phone_number }}" placeholder="+49...">
+                                    <small class="text-muted">Include country code (e.g., +49 for Germany)</small>
+                                </div>
+                                
+                                <h5 class="mb-3 mt-4">Emergency Contact</h5>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Emergency Contact Name</label>
+                                    <input type="text" name="emergency_contact_name" class="form-control" 
+                                           value="{{ user.emergency_contact_name }}" placeholder="Full name">
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Emergency Contact Phone</label>
+                                    <input type="text" name="emergency_contact_phone" class="form-control" 
+                                           value="{{ user.emergency_contact_phone }}" placeholder="+1...">
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <h5 class="mb-3">Current Status</h5>
+                                
+                                <div class="alert alert-info">
+                                    <h6><i class="fas fa-info-circle me-2"></i>Current Information</h6>
+                                    <ul class="mb-0 small">
+                                        <li><strong>University:</strong> {{ user.get_university_display }}</li>
+                                        <li><strong>Course:</strong> {{ user.course_of_study }}</li>
+                                        <li><strong>Destination:</strong> {{ user.intended_city }}</li>
+                                        <li><strong>Status:</strong> {{ user.get_arrival_status_display }}</li>
+                                        {% if user.arrival_date %}
+                                            <li><strong>Arrival Date:</strong> {{ user.arrival_date|date:"M d, Y" }}</li>
+                                        {% endif %}
+                                    </ul>
+                                </div>
+                                
+                                <div class="alert alert-warning">
+                                    <h6><i class="fas fa-lightbulb me-2"></i>Pro Tips</h6>
+                                    <ul class="mb-0 small">
+                                        <li>Keep your phone number updated for important notifications</li>
+                                        <li>Emergency contact should be someone outside Germany</li>
+                                        <li>Complete profile gets better personalized recommendations</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="text-center mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg px-4">
+                                <i class="fas fa-save me-2"></i>Update Profile
+                            </button>
+                            <a href="{% url 'dashboard' %}" class="btn btn-secondary btn-lg px-4 ms-2">
+                                <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
