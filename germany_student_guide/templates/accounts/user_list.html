@@ -1,0 +1,207 @@
+<!-- templates/accounts/user_list.html -->
+{% extends 'base.html' %}
+
+{% block title %}Student Directory - Germany Student Guide{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="bg-white rounded-3 shadow-sm p-4 mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h1><i class="fas fa-users me-2"></i>Student Directory</h1>
+                        <p class="text-muted mb-0">{{ total_users }} students registered</p>
+                    </div>
+                    <div>
+                        <span class="german-flag"></span>
+                    </div>
+                </div>
+                
+                <!-- Search and Filter Form -->
+                <form method="get" class="mb-4">
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <label class="form-label small">Search Students</label>
+                            <input type="text" name="search" class="form-control" 
+                                   placeholder="Name, email, username..." 
+                                   value="{{ search_query }}">
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label small">University</label>
+                            <select name="university" class="form-select">
+                                <option value="">All Universities</option>
+                                {% for uni in universities %}
+                                    {% if uni %}
+                                        <option value="{{ uni }}" {% if uni == university_filter %}selected{% endif %}>
+                                            {{ uni|title }}
+                                        </option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label small">City</label>
+                            <select name="city" class="form-select">
+                                <option value="">All Cities</option>
+                                {% for city in cities %}
+                                    {% if city %}
+                                        <option value="{{ city }}" {% if city == city_filter %}selected{% endif %}>
+                                            {{ city }}
+                                        </option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label small">Status</label>
+                            <select name="status" class="form-select">
+                                <option value="">All Statuses</option>
+                                {% for status_code, status_name in statuses %}
+                                    <option value="{{ status_code }}" {% if status_code == status_filter %}selected{% endif %}>
+                                        {{ status_name }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-3 d-flex align-items-end">
+                            <button type="submit" class="btn btn-primary me-2">
+                                <i class="fas fa-search me-1"></i>Search
+                            </button>
+                            <a href="{% url 'user_list' %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-times me-1"></i>Clear
+                            </a>
+                        </div>
+                    </div>
+                </form>
+                
+                <!-- Users Table -->
+                {% if users %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Student</th>
+                                    <th>Contact</th>
+                                    <th>University</th>
+                                    <th>Destination</th>
+                                    <th>Status</th>
+                                    <th>Joined</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for user in users %}
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="avatar-circle me-3">
+                                                    {{ user.first_name.0 }}{{ user.last_name.0 }}
+                                                </div>
+                                                <div>
+                                                    <strong>{{ user.get_full_name }}</strong><br>
+                                                    <small class="text-muted">@{{ user.username }}</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <small>
+                                                <i class="fas fa-envelope me-1"></i>{{ user.email }}<br>
+                                                {% if user.phone_number %}
+                                                    <i class="fas fa-phone me-1"></i>{{ user.phone_number }}
+                                                {% endif %}
+                                            </small>
+                                        </td>
+                                        <td>
+                                            <strong>{{ user.get_university_display }}</strong><br>
+                                            <small class="text-muted">{{ user.course_of_study }}</small>
+                                        </td>
+                                        <td>
+                                            <i class="fas fa-map-marker-alt me-1"></i>{{ user.intended_city }}<br>
+                                            {% if user.arrival_date %}
+                                                <small class="text-muted">Arriving: {{ user.arrival_date|date:"M d, Y" }}</small>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-{% if user.arrival_status == 'ARRIVED' %}success{% elif user.arrival_status == 'PLANNING' %}warning{% else %}info{% endif %}">
+                                                {{ user.get_arrival_status_display }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <small>{{ user.date_joined|date:"M d, Y" }}</small>
+                                        </td>
+                                        <td>
+                                            <a href="{% url 'user_detail' user.id %}" class="btn btn-sm btn-outline-primary">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- Pagination -->
+                    {% if users.has_other_pages %}
+                        <nav aria-label="User pagination">
+                            <ul class="pagination justify-content-center">
+                                {% if users.has_previous %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page=1{% if search_query %}&search={{ search_query }}{% endif %}{% if university_filter %}&university={{ university_filter }}{% endif %}{% if city_filter %}&city={{ city_filter }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}">First</a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ users.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if university_filter %}&university={{ university_filter }}{% endif %}{% if city_filter %}&city={{ city_filter }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}">Previous</a>
+                                    </li>
+                                {% endif %}
+                                
+                                <li class="page-item active">
+                                    <span class="page-link">
+                                        Page {{ users.number }} of {{ users.paginator.num_pages }}
+                                    </span>
+                                </li>
+                                
+                                {% if users.has_next %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ users.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if university_filter %}&university={{ university_filter }}{% endif %}{% if city_filter %}&city={{ city_filter }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}">Next</a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ users.paginator.num_pages }}{% if search_query %}&search={{ search_query }}{% endif %}{% if university_filter %}&university={{ university_filter }}{% endif %}{% if city_filter %}&city={{ city_filter }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}">Last</a>
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        </nav>
+                    {% endif %}
+                {% else %}
+                    <div class="text-center py-5">
+                        <i class="fas fa-user-friends fa-3x text-muted mb-3"></i>
+                        <h4>No students found</h4>
+                        <p class="text-muted">
+                            {% if search_query or university_filter or city_filter or status_filter %}
+                                Try adjusting your search criteria.
+                            {% else %}
+                                No students have registered yet.
+                            {% endif %}
+                        </p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.avatar-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 14px;
+}
+</style>
+{% endblock %}
+

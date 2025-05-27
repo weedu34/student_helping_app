@@ -1,0 +1,128 @@
+<!-- templates/accounts/user_detail.html -->
+{% extends 'base.html' %}
+
+{% block title %}{{ profile_user.get_full_name }} - Student Profile{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="bg-white rounded-3 shadow-sm">
+                <div class="auth-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h2>{{ profile_user.get_full_name }}</h2>
+                            <p class="mb-0">@{{ profile_user.username }} • Joined {{ profile_user.date_joined|date:"M d, Y" }}</p>
+                        </div>
+                        <div class="text-end">
+                            <div class="avatar-circle" style="width: 60px; height: 60px; font-size: 24px;">
+                                {{ profile_user.first_name.0 }}{{ profile_user.last_name.0 }}
+                            </div>
+                            <small class="d-block mt-2">{{ completion_percentage }}% Complete</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="auth-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h4 class="mb-3"><i class="fas fa-user me-2"></i>Personal Information</h4>
+                            <table class="table table-borderless">
+                                <tr>
+                                    <td><strong>Full Name:</strong></td>
+                                    <td>{{ profile_user.get_full_name }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Email:</strong></td>
+                                    <td>{{ profile_user.email }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Phone:</strong></td>
+                                    <td>{{ profile_user.phone_number|default:"Not provided" }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Date of Birth:</strong></td>
+                                    <td>{{ profile_user.date_of_birth|default:"Not provided" }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Nationality:</strong></td>
+                                    <td>{{ profile_user.get_nationality_display }}</td>
+                                </tr>
+                            </table>
+                            
+                            <h4 class="mb-3 mt-4"><i class="fas fa-shield-alt me-2"></i>Emergency Contact</h4>
+                            <table class="table table-borderless">
+                                <tr>
+                                    <td><strong>Name:</strong></td>
+                                    <td>{{ profile_user.emergency_contact_name|default:"Not provided" }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Phone:</strong></td>
+                                    <td>{{ profile_user.emergency_contact_phone|default:"Not provided" }}</td>
+                                </tr>
+                            </table>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <h4 class="mb-3"><i class="fas fa-graduation-cap me-2"></i>Academic Information</h4>
+                            <table class="table table-borderless">
+                                <tr>
+                                    <td><strong>University:</strong></td>
+                                    <td>{{ profile_user.get_university_display }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Student ID:</strong></td>
+                                    <td>{{ profile_user.student_id|default:"Not provided" }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Course:</strong></td>
+                                    <td>{{ profile_user.course_of_study }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Expected Graduation:</strong></td>
+                                    <td>{{ profile_user.expected_graduation|default:"Not provided" }}</td>
+                                </tr>
+                            </table>
+                            
+                            <h4 class="mb-3 mt-4"><i class="fas fa-map-marker-alt me-2"></i>Arrival Information</h4>
+                            <table class="table table-borderless">
+                                <tr>
+                                    <td><strong>Intended City:</strong></td>
+                                    <td>{{ profile_user.intended_city }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Arrival Date:</strong></td>
+                                    <td>{{ profile_user.arrival_date|default:"Not specified" }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Arrival Airport:</strong></td>
+                                    <td>{{ profile_user.arrival_airport|default:"Not specified" }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Status:</strong></td>
+                                    <td>
+                                        <span class="badge bg-{% if profile_user.arrival_status == 'ARRIVED' %}success{% elif profile_user.arrival_status == 'PLANNING' %}warning{% else %}info{% endif %}">
+                                            {{ profile_user.get_arrival_status_display }}
+                                        </span>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center mt-4">
+                        <a href="{% url 'user_list' %}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>Back to Directory
+                        </a>
+                        {% if request.user == profile_user %}
+                            <a href="{% url 'profile_update' %}" class="btn btn-primary ms-2">
+                                <i class="fas fa-edit me-2"></i>Edit Profile
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
